@@ -1,0 +1,24 @@
+{
+  "name": "codersquad/urlshortener",
+  "type": "library",
+  "description": "Simple class for shorten url service",
+  "homepage": "http://codersquad.de",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Oliver Monneke",
+      "email": "oliver@codersquad.de",
+      "homepage": "http://codersquad.de",
+      "role": "Developer"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "~4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Codersquad\\Urlshortener\\": ["src"],
+      "Codersquad\\Urlshortener\\Tests\\": ["tests"]
+    }
+  }
+}
