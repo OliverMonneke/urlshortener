@@ -30,7 +30,7 @@ class Configuration
      */
     public function __construct()
     {
-        $directories = array(__DIR__.'/../app/config');
+        $directories = array(__DIR__.'/../Resources/config');
         $locator = new FileLocator($directories);
         $loader = new YamlConfigLoader($locator);
         $configValues = $loader->load($locator->locate('config.yml'));
