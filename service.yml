@@ -1,0 +1,4 @@
+codersquad_urlshortener_urlshortener:
+	class: Codersquad\Urlshortener\Urlshortener
+    arguments:
+        entityManager: "@doctrine.orm.entity_manager"

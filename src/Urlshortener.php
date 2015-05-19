@@ -53,14 +53,14 @@ final class Urlshortener
      */
     public function __construct(EntityManager $entityManager, array $configuration = [])
     {
-        $this->configuration = $configuration;
+        $defaultConfiguration = Yaml::parse(file_get_contents(__DIR__.'/../config.yml'));
+        $this->configuration = array_merge($defaultConfiguration, $configuration);
 
-        $container = new ContainerBuilder();
-        $loader = new YamlFileLoader($container, new DefaultFileLocator(__DIR__));
-        $loader->load(__DIR__.'/../services.yml');
-
+//        $container = new ContainerBuilder();
+//        $loader = new YamlFileLoader($container, new DefaultFileLocator(__DIR__));
+//        $loader->load(__DIR__.'/../services.yml');
+//var_dump($this->configuration);exit;
         try {
-            $configuration = Yaml::parse(file_get_contents(__DIR__.'/../config.yml'));
             var_dump($configuration['doctrine']['dbal']);
             exit;
         } catch (ParseException $e) {
