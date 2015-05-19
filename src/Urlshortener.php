@@ -2,6 +2,10 @@
 
 namespace Codersquad\Urlshortener;
 
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Exception\ParseException;
+
 /**
  * Class Urlshortener.
  */
@@ -34,6 +38,29 @@ final class Urlshortener
      * @var string
      */
     private $code = null;
+
+    /**
+     * @var array
+     */
+    private $configuration = [];
+
+    /**
+     * @param \Doctrine\ORM\EntityManager $entityManager
+     * @param array                       $configuration
+     */
+    public function __construct(EntityManager $entityManager, array $configuration = [])
+    {
+        $this->configuration = $configuration;
+
+        try {
+            $configuration = Yaml::parse(file_get_contents(__DIR__.'/../config.yml'));
+            var_dump($configuration['doctrine']['dbal']);
+            exit;
+        } catch (ParseException $e) {
+            printf('Unable to parse the YAML string: %s', $e->getMessage());
+        }
+//        $entityManager = EntityManager::create($dbParams, $config);
+    }
 
     /**
      * @return string
@@ -112,7 +139,7 @@ final class Urlshortener
         $code = '';
 
         for ($i = 1; $i <= $this->getCodeLength(); $i++) {
-            $randomNumber = rand(0, ($stringLength-1));
+            $randomNumber = rand(0, ($stringLength - 1));
             $code .= substr($this->getAllowedChars(), $randomNumber, 1);
         }
 

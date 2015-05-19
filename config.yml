@@ -1,0 +1,7 @@
+server:
+    url:  http://codersquad.de
+
+code:
+    length: 12
+    allowedchars: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+
