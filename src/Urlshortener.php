@@ -119,7 +119,7 @@ class Urlshortener
      */
     public function codeExists()
     {
-        $repository = new UrlshortenerRepository($this->entityManager, $this->entityManager->getClassMetadata(get_class(new \Codersquad\Urlshortener\Entity\Urlshortener())));
+        $repository = new UrlshortenerRepository($this->entityManager, $this->entityManager->getClassMetadata(get_class(new Entity\Urlshortener())));
         $entity = $repository->findOneBy(['code' => $this->getCode()]);
 
         return ($entity !== null);
@@ -149,7 +149,7 @@ class Urlshortener
     public function remove()
     {
         if ($this->codeExists()) {
-            $repository = new UrlshortenerRepository($this->entityManager, $this->entityManager->getClassMetadata(get_class(new \Codersquad\Urlshortener\Entity\Urlshortener())));
+            $repository = new UrlshortenerRepository($this->entityManager, $this->entityManager->getClassMetadata(get_class(new Entity\Urlshortener())));
             $entity = $repository->findOneBy(['code' => $this->getCode()]);
             $this->entityManager->remove($entity);
             $this->entityManager->flush();
