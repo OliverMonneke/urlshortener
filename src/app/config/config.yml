@@ -3,9 +3,3 @@ codersquad:
         url:  http://codersquad.de
         codelength: 12
         allowedchars: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
-
-doctrine:
-    orm:
-        mappings:
-            Urlshortener:
-                type: annotationasd
