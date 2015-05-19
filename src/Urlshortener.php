@@ -2,71 +2,47 @@
 
 namespace Codersquad\Urlshortener;
 
-use Doctrine\Common\Persistence\Mapping\Driver\DefaultFileLocator;
+use Codersquad\Urlshortener\Entity\Configuration;
+use Codersquad\Urlshortener\Entity\UrlshortenerRepository;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Yaml\Exception\ParseException;
 
 /**
  * Class Urlshortener.
  */
-final class Urlshortener
+class Urlshortener
 {
-    /**
-     * Server URL starting with protocol and ending with a slash.
-     *
-     * @var string
-     */
-    private $server = 'http://codersquad.de/';
-
-    /**
-     * Allowed chars for short code.
-     *
-     * @var string
-     */
-    private $allowedChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-
-    /**
-     * Length of code.
-     *
-     * @var int
-     */
-    private $codeLength = 12;
-
     /**
      * The short code.
      *
      * @var string
      */
-    private $code = null;
+    private $code;
 
     /**
-     * @var array
+     * URL to redirect
+     *
+     * @var string
      */
-    private $configuration = [];
+    private $url;
+
+    /**
+     * @var Configuration
+     */
+    private $configuration;
+
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
 
     /**
      * @param \Doctrine\ORM\EntityManager $entityManager
-     * @param array                       $configuration
      */
-    public function __construct(EntityManager $entityManager, array $configuration = [])
+    public function __construct(EntityManager $entityManager)
     {
-        $defaultConfiguration = Yaml::parse(file_get_contents(__DIR__.'/../config.yml'));
-        $this->configuration = array_merge($defaultConfiguration, $configuration);
-
-//        $container = new ContainerBuilder();
-//        $loader = new YamlFileLoader($container, new DefaultFileLocator(__DIR__));
-//        $loader->load(__DIR__.'/../services.yml');
-//var_dump($this->configuration);exit;
-        try {
-            var_dump($configuration['doctrine']['dbal']);
-            exit;
-        } catch (ParseException $e) {
-            printf('Unable to parse the YAML string: %s', $e->getMessage());
-        }
-//        $entityManager = EntityManager::create($dbParams, $config);
+        $this->entityManager = $entityManager;
+        $this->configuration = new Configuration();
     }
 
     /**
@@ -90,51 +66,23 @@ final class Urlshortener
     }
 
     /**
-     * @return mixed
-     */
-    public function getServer()
-    {
-        return $this->server;
-    }
-
-    /**
-     * @param mixed $server
-     *
-     * @return $this
-     */
-    public function setServer($server)
-    {
-        $this->server = $server;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAllowedChars()
-    {
-        return $this->allowedChars;
-    }
-
-    /**
-     * @param mixed $allowedChars
-     *
-     * @return $this
-     */
-    public function setAllowedChars($allowedChars)
-    {
-        $this->allowedChars = $allowedChars;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getUrl()
     {
-        return $this->getServer().$this->getCode();
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return $this
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+
+        return $this;
     }
 
     /**
@@ -142,32 +90,82 @@ final class Urlshortener
      */
     public function generateCode()
     {
-        $stringLength = strlen($this->getAllowedChars());
+        $stringLength = strlen($this->getConfiguration()->getAllowedChars());
         $code = '';
 
-        for ($i = 1; $i <= $this->getCodeLength(); $i++) {
+        for ($i = 1; $i <= $this->getConfiguration()->getCodelength(); $i++) {
             $randomNumber = rand(0, ($stringLength - 1));
-            $code .= substr($this->getAllowedChars(), $randomNumber, 1);
+            $code .= substr($this->getConfiguration()->getAllowedchars(), $randomNumber, 1);
         }
 
         $this->setCode($code);
+
+        while ($this->codeExists()) {
+            $this->generateCode();
+        }
 
         return $this->getCode();
     }
 
     /**
-     * @return int
+     * @return Configuration
      */
-    public function getCodeLength()
+    private function getConfiguration()
     {
-        return $this->codeLength;
+        return $this->configuration;
     }
 
     /**
-     * @param int $codeLength
+     * @return bool
      */
-    public function setCodeLength($codeLength)
+    public function codeExists()
     {
-        $this->codeLength = $codeLength;
+        $repository = new UrlshortenerRepository($this->entityManager, $this->entityManager->getClassMetadata(get_class(new \Codersquad\Urlshortener\Entity\Urlshortener())));
+        $entity = $repository->findOneBy(['code' => $this->getCode()]);
+
+        return ($entity !== null);
+    }
+
+    /**
+     * @return bool
+     */
+    public function add()
+    {
+        if ($this->codeExists()) {
+            return false;
+        }
+
+        $entity = new Entity\Urlshortener();
+        $entity->setCode($this->getCode());
+        $entity->setUrl($this->getUrl());
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function remove()
+    {
+        if ($this->codeExists()){
+            $repository = new UrlshortenerRepository($this->entityManager, $this->entityManager->getClassMetadata(get_class(new \Codersquad\Urlshortener\Entity\Urlshortener())));
+            $entity = $repository->findOneBy(['code' => $this->getCode()]);
+            $this->entityManager->remove($entity);
+            $this->entityManager->flush();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRedirectUrl()
+    {
+        return $this->getUrl().'/'.$this->getCode();
     }
 }
