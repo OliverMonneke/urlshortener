@@ -6,14 +6,14 @@ use Symfony\Component\Config\Loader\FileLoader;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class YamlConfigLoader
- * @package Codersquad\Urlshortener\DepencyInjection
+ * Class YamlConfigLoader.
  */
 class YamlConfigLoader extends FileLoader
 {
     /**
      * @param mixed $resource
-     * @param null $type
+     * @param null  $type
+     *
      * @return mixed
      */
     public function load($resource, $type = null)
@@ -25,7 +25,8 @@ class YamlConfigLoader extends FileLoader
 
     /**
      * @param mixed $resource
-     * @param null $type
+     * @param null  $type
+     *
      * @return bool
      */
     public function supports($resource, $type = null)

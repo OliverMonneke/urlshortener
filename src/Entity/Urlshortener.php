@@ -5,12 +5,10 @@ namespace Codersquad\Urlshortener\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class Urlshortener
+ * Class Urlshortener.
  *
  * @ORM\Table(name="urlshortener")
  * @ORM\Entity(repositoryClass="UrlshortenerRepository")
- *
- * @package Codersquad\Urlshortener\Entity
  */
 class Urlshortener
 {

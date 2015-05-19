@@ -4,7 +4,6 @@ namespace Codersquad\Urlshortener;
 
 use Codersquad\Urlshortener\Entity\Configuration;
 use Codersquad\Urlshortener\Entity\UrlshortenerRepository;
-use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -20,7 +19,7 @@ class Urlshortener
     private $code;
 
     /**
-     * URL to redirect
+     * URL to redirect.
      *
      * @var string
      */
@@ -149,7 +148,7 @@ class Urlshortener
      */
     public function remove()
     {
-        if ($this->codeExists()){
+        if ($this->codeExists()) {
             $repository = new UrlshortenerRepository($this->entityManager, $this->entityManager->getClassMetadata(get_class(new \Codersquad\Urlshortener\Entity\Urlshortener())));
             $entity = $repository->findOneBy(['code' => $this->getCode()]);
             $this->entityManager->remove($entity);

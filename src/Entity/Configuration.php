@@ -6,8 +6,7 @@ use Codersquad\Urlshortener\DepencyInjection\YamlConfigLoader;
 use Symfony\Component\Config\FileLocator;
 
 /**
- * Class Configuration
- * @package Codersquad\Urlshortener\Entity
+ * Class Configuration.
  */
 class Configuration
 {
@@ -31,7 +30,7 @@ class Configuration
      */
     public function __construct()
     {
-        $directories = array(__DIR__ . '/../app/config');
+        $directories = array(__DIR__.'/../app/config');
         $locator = new FileLocator($directories);
         $loader = new YamlConfigLoader($locator);
         $configValues = $loader->load($locator->locate('config.yml'));
