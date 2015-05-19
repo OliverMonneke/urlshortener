@@ -2,7 +2,10 @@
 
 namespace Codersquad\Urlshortener;
 
+use Doctrine\Common\Persistence\Mapping\Driver\DefaultFileLocator;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException;
 
@@ -51,6 +54,10 @@ final class Urlshortener
     public function __construct(EntityManager $entityManager, array $configuration = [])
     {
         $this->configuration = $configuration;
+
+        $container = new ContainerBuilder();
+        $loader = new YamlFileLoader($container, new DefaultFileLocator(__DIR__));
+        $loader->load(__DIR__.'/../services.yml');
 
         try {
             $configuration = Yaml::parse(file_get_contents(__DIR__.'/../config.yml'));

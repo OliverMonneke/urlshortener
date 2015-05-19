@@ -5,3 +5,7 @@ code:
     length: 12
     allowedchars: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
 
+codersquad_urlshortener_urlshortener:
+	class: Codersquad\Urlshortener\Urlshortener
+    arguments:
+        entityManager: "@doctrine.orm.entity_manager"
