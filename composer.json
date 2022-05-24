@@ -2,13 +2,13 @@
   "name": "codersquad/urlshortener",
   "type": "library",
   "description": "Simple class for shorten url service",
-  "homepage": "http://codersquad.de",
+  "homepage": "https://oliver.monneke.de",
   "license": "MIT",
   "authors": [
     {
       "name": "Oliver Monneke",
-      "email": "oliver@codersquad.de",
-      "homepage": "http://codersquad.de",
+      "email": "o.monneke@googlemail.com",
+      "homepage": "https://oliver.monneke.de",
       "role": "Developer"
     }
   ],
